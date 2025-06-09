@@ -8,6 +8,10 @@ const bot = new TelegramBot(TOKEN, { polling: true });
 
 const app = express();
 
+app.get("/ping", (req, res) => {
+  res.send("pong");
+})
+
 app.use(express.json());
 
 const accessAllow = [
