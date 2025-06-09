@@ -1,0 +1,19 @@
+{
+  "name": "bot-for-iot",
+  "version": "1.0.0",
+  "description": "telegram bot what serve as layer between user and home IoT ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --env-file=.env index.js",
+    "test-bot": "ngrok http 3000"
+  },
+  "author": "Andrew Yupin",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "ngrok": "^5.0.0-beta.2",
+    "node-telegram-bot-api": "^0.66.0",
+    "nodemon": "^3.1.10"
+  }
+}
