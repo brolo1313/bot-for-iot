@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "telegram bot what serve as layer between user and home IoT ",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --env-file=.env index.js",
