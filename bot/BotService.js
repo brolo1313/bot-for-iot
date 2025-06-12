@@ -1,6 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import { accessAllow } from "../config/access.js";
 import { inlineKeyboard } from "../bot/commands.js";
+import { sendCommandToIot } from "../helpers/api.js";
 
 class BotService {
   constructor(token) {
@@ -45,25 +46,39 @@ class BotService {
 
   async handleCallback(query) {
     const chatId = query.message.chat.id;
-    const data = query.data;
+    const command = query.data;
 
-    if (data === "air_on") {
-      // await this.sendAirOn(); // підключити реальний запит
-      this.bot.sendMessage(chatId, "✅ AIR увімкнено");
-    } else if (data === "air_off") {
-      this.bot.sendMessage(chatId, "⛔ AIR вимкнено");
+    const actionMap = {
+      air_on: {
+        successMsg: "✅ *AIR увімкнено* 🔛",
+        failMsg: "❌ *Помилка увімкнення*",
+        expectedAction: "on",
+      },
+      air_off: {
+        successMsg: "❎ *AIR вимкнено* 🔴",
+        failMsg: "❌ *Помилка виключення*",
+        expectedAction: "off",
+      },
+    };
+
+    if (!actionMap[command]) {
+      this.bot.sendMessage(chatId, "⚠️ Невідома команда");
+      return;
     }
+
+    const { successMsg, failMsg, expectedAction } = actionMap[command];
+    const response = await sendCommandToIot(command);
+
+    const isSuccess =
+      response &&
+      response.status?.toLowerCase().trim() === "ok" &&
+      response.action === expectedAction;
+
+    this.bot.sendMessage(chatId, isSuccess ? successMsg : failMsg, {
+      parse_mode: "Markdown",
+    });
 
     this.bot.answerCallbackQuery(query.id);
-  }
-
-  async sendAirOn() {
-    try {
-      const response = await fetch("http://38.0.101.76/air_on");
-      console.log("Air On Response:", response);
-    } catch (err) {
-      console.error("Error turning on air:", err);
-    }
   }
 }
 
