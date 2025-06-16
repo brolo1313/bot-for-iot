@@ -7,7 +7,15 @@ export async function sendCommandToIot(command) {
     const json = await res.json();
     return json;
   } catch (err) {
-    console.error("🚨 Помилка запиту до ESP:", err);
-    return { status: "error" };
+    console.error("🚨 Помилка запиту до ESP!", err);
+
+    const causeMessage = err.cause
+      ? `\n\nПричина: ${err.cause.name}: ${err.cause.message}`
+      : "";
+
+    return {
+      status: "error",
+      message: `🚨 *Помилка* запиту до ESP!\n\n${err.name}: ${err.message}${causeMessage}`,
+    };
   }
 }

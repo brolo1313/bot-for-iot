@@ -69,12 +69,14 @@ class BotService {
     const { successMsg, failMsg, expectedAction } = actionMap[command];
     const response = await sendCommandToIot(command);
 
+    const error = response?.status === 'error'  ? response.message : failMsg;
+
     const isSuccess =
       response &&
       response.status?.toLowerCase().trim() === "ok" &&
       response.action === expectedAction;
 
-    this.bot.sendMessage(chatId, isSuccess ? successMsg : failMsg, {
+    this.bot.sendMessage(chatId, isSuccess ? successMsg : error, {
       parse_mode: "Markdown",
     });
 
